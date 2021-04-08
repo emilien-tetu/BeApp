@@ -1,0 +1,2 @@
+emilien/tetu/taptogo/androidApp/BuildConfig.java
+ emilien.tetu.taptogo.androidApp.BuildConfig

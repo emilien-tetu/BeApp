@@ -1,0 +1,2 @@
+emilien/tetu/taptogo/shared/BuildConfig.java
+ emilien.tetu.taptogo.shared.BuildConfig

@@ -7,9 +7,9 @@ pluginManagement {
     }
     
 }
-rootProject.name = "TapAndGo"
+rootProject.name = "TapToGo"
 
 
-include(":tapAndGoAndroidApp")
+include(":androidApp")
 include(":shared")
 
