@@ -1,0 +1,49 @@
+package emilien.tetu.taptogo.ui.filter
+
+import android.content.Intent
+import androidx.appcompat.app.AppCompatActivity
+import android.os.Bundle
+import android.widget.EditText
+import android.widget.Switch
+import com.google.android.material.button.MaterialButton
+import com.google.android.material.switchmaterial.SwitchMaterial
+import emilien.tetu.taptogo.R
+import emilien.tetu.taptogo.ui.home.HomeActivity
+
+class FilterActivity : AppCompatActivity() {
+
+    companion object{
+        const val NAME_STATION = "NAME_STATION"
+        const val BIKE_AVAILABLE = "BIKE_AVAILABLE"
+        const val ONLY_OPEN = "ONLY_OPEN"
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_filter)
+
+        var isCheck = false
+
+        val nameStationEditText = findViewById<EditText>(R.id.filterNameStation)
+        val numberBikeAvailableEditText = findViewById<EditText>(R.id.filterBikeAvailable)
+        val onlyOpenStation = findViewById<SwitchMaterial>(R.id.filterSwitch)
+        val searchButton = findViewById<MaterialButton>(R.id.filterButton)
+
+        onlyOpenStation.setOnCheckedChangeListener { buttonView, isChecked -> isCheck = isChecked }
+
+        searchButton.setOnClickListener {
+
+            val numberBikeString : String = numberBikeAvailableEditText.text.toString()
+            val numberBike : Int = if (numberBikeString != ""){numberBikeString.toInt()} else {0}
+
+            val nameStation : String = nameStationEditText.text.toString()
+
+            val intent = Intent(this,HomeActivity::class.java)
+            intent.putExtra(NAME_STATION, nameStation)
+            intent.putExtra(BIKE_AVAILABLE, numberBike)
+            intent.putExtra(ONLY_OPEN, isCheck)
+            setResult(RESULT_OK,intent)
+            finish()
+        }
+    }
+}

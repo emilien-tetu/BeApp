@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "12397685762",
+    "project_id": "taptogo-310206",
+    "storage_bucket": "taptogo-310206.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:12397685762:android:a35cc5b30dd958abf9cb1b",
+        "android_client_info": {
+          "package_name": "emilien.tetu.taptogo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "12397685762-0laaftffmg7p8sdvbdasch8uer6be0r7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDyNMYIvOGWd3tXMEwpkLfuqKV1mNly5J8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "12397685762-0laaftffmg7p8sdvbdasch8uer6be0r7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

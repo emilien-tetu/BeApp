@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="20dp"
+    tools:context=".ui.details.DetailStationActivity">
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/detailTittle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Station"
+        android:textStyle="bold"
+        android:textAlignment="center"
+        android:textSize="30sp"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/detailName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="name : station name"
+        android:layout_marginTop="30dp"
+        android:textSize="20sp"
+        app:layout_constraintTop_toBottomOf="@id/detailTittle"/>
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/detailAddress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="address : address station"
+        android:layout_marginTop="30dp"
+        android:textSize="20sp"
+        app:layout_constraintTop_toBottomOf="@id/detailName"/>
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/detailBikeAvailable"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Bikes available : 30"
+        android:layout_marginTop="30dp"
+        android:textSize="20sp"
+        app:layout_constraintTop_toBottomOf="@id/detailAddress"/>
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/detailBikeStandAvailable"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Bikes stand available : 30"
+        android:layout_marginTop="30dp"
+        android:textSize="20sp"
+        app:layout_constraintTop_toBottomOf="@id/detailBikeAvailable"/>
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/detailOpen"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Status : Open"
+        android:layout_marginTop="30dp"
+        android:textSize="20sp"
+        app:layout_constraintTop_toBottomOf="@id/detailBikeStandAvailable"/>
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/detailLatitude"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Latitude : -47.8909"
+        android:layout_marginTop="30dp"
+        android:textSize="20sp"
+        app:layout_constraintTop_toBottomOf="@id/detailOpen"/>
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/detailLongitude"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Latitude : -47.8909"
+        android:layout_marginTop="30dp"
+        android:textSize="20sp"
+        app:layout_constraintTop_toBottomOf="@id/detailLatitude"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
