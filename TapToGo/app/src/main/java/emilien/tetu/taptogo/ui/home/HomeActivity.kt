@@ -16,6 +16,7 @@ import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.snackbar.Snackbar
 import emilien.tetu.taptogo.R
+import emilien.tetu.taptogo.databinding.ActivityHomeBinding
 import emilien.tetu.taptogo.domain.model.StateStation
 import emilien.tetu.taptogo.domain.model.toStringStatus
 import emilien.tetu.taptogo.presentation.controller.HomeController
@@ -33,9 +34,12 @@ import org.koin.android.ext.android.inject
 
 class HomeActivity : AppCompatActivity(), OnMapReadyCallback, StationListener {
 
-    val NANTES = LatLng(47.2173, -1.5534)
-    val REQUEST_CODE_FILTER = 1
-    val REQUEST_CODE_NAV = 2
+    companion object {
+        private val NANTES = LatLng(47.2173, -1.5534)
+        private val REQUEST_CODE_FILTER = 1
+        private val REQUEST_CODE_NAV = 2
+    }
+
     private var mGoogleMap: GoogleMap? = null
     private var listOfStation : MutableList<Station> = mutableListOf()
     private var listOfStationSave : MutableList<Station> = mutableListOf()
@@ -43,14 +47,14 @@ class HomeActivity : AppCompatActivity(), OnMapReadyCallback, StationListener {
     private val controller: HomeController by inject()
     private val viewModel: HomeViewModel by inject()
 
-    private var recyclerView : RecyclerView? = null
-    private var searchBar : EditText? = null
-
-    private var progressBar : ProgressBar? = null
+    private lateinit var binding: ActivityHomeBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_home)
+        binding = ActivityHomeBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
+        //setContentView(R.layout.activity_home)
 
         viewModel.state.observe(this, { updateUI(it) })
 
@@ -59,33 +63,26 @@ class HomeActivity : AppCompatActivity(), OnMapReadyCallback, StationListener {
         val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as? SupportMapFragment
         mapFragment?.getMapAsync(this)
 
-        progressBar = findViewById(R.id.homeProgressBar)
-
         val viewAdapter = StationAdapter(listOfStation, this)
-        recyclerView = findViewById(R.id.recyclerView)
-        recyclerView?.layoutManager = LinearLayoutManager(this, RecyclerView.HORIZONTAL, false)
-        recyclerView?.adapter = viewAdapter
+        binding.recyclerView.layoutManager = LinearLayoutManager(this, RecyclerView.HORIZONTAL, false)
+        binding.recyclerView.adapter = viewAdapter
 
-        searchBar = findViewById(R.id.homeSearch)
-        searchBar?.doOnTextChanged { text, _, _, _ ->
+        binding.homeSearch.doOnTextChanged { text, _, _, _ ->
             refreshData(getSearchResult(text, listOfStation).sortedBy { it.name })
         }
 
-        val homeFilterButton = findViewById<ImageButton>(R.id.homeFilterButton)
-        homeFilterButton.setOnClickListener {
+        binding.homeFilterButton.setOnClickListener {
             startActivityForResult(Intent(this, FilterActivity::class.java), REQUEST_CODE_FILTER)
         }
 
-        val homeRefreshButton = findViewById<ImageButton>(R.id.homeRefreshButton)
-        homeRefreshButton.setOnClickListener {
+        binding.homeRefreshButton.setOnClickListener {
             listOfStation.clear()
             refreshData(listOfStation)
             mGoogleMap?.clear()
             controller.getAllStations()
         }
 
-        val homeNavigationButton = findViewById<ImageButton>(R.id.homeNavigation)
-        homeNavigationButton.setOnClickListener {
+        binding.homeNavigation.setOnClickListener {
             startActivityForResult(Intent(this, NavigationActivity::class.java), REQUEST_CODE_NAV)
         }
     }
@@ -127,26 +124,26 @@ class HomeActivity : AppCompatActivity(), OnMapReadyCallback, StationListener {
         Log.d("DEBUG", "state = ${state::class.java.simpleName}")
         when (state) {
             is LoadDataError -> {
-                progressBar?.visibility = View.GONE
+                binding.homeProgressBar.visibility = View.GONE
                 Snackbar.make(findViewById(android.R.id.content),"Something append, retry later..",Snackbar.LENGTH_LONG).show()
             }
             is LoadStation -> {
-                progressBar?.visibility = View.GONE
+                binding.homeProgressBar.visibility = View.GONE
                 listOfStation = state.stations.toMutableList()
                 listOfStationSave = state.stations.toMutableList()
                 addStations(state.stations)
             }
             is LoadNavigationStation -> {
-                progressBar?.visibility = View.GONE
+                binding.homeProgressBar.visibility = View.GONE
                 listOfStation = state.stations.toMutableList()
                 addNavigationStations(state.stations.first(),state.stations.last())
             }
             is Loading -> {
                 mGoogleMap?.clear()
-                progressBar?.visibility = View.VISIBLE
+                binding.homeProgressBar.visibility = View.VISIBLE
             }
             is LoadNavigationError -> {
-                progressBar?.visibility = View.GONE
+                binding.homeProgressBar.visibility = View.GONE
                 Snackbar.make(findViewById(android.R.id.content),state.message,Snackbar.LENGTH_LONG).show()
             }
         }
@@ -174,8 +171,8 @@ class HomeActivity : AppCompatActivity(), OnMapReadyCallback, StationListener {
     }
 
     private fun refreshData(stations: List<Station>) {
-        recyclerView?.adapter = StationAdapter(stations.toMutableList(), this)
-        recyclerView?.adapter?.notifyDataSetChanged()
+        binding.recyclerView.adapter = StationAdapter(stations.toMutableList(), this)
+        binding.recyclerView.adapter?.notifyDataSetChanged()
     }
 
     override fun onClickListener(
@@ -186,8 +183,8 @@ class HomeActivity : AppCompatActivity(), OnMapReadyCallback, StationListener {
         mGoogleMap?.moveTo(stationLatLng, 16f)
         val marker = mGoogleMap?.addMarker(stationLatLng, stationName, stationStatus)
         marker?.showInfoWindow()
-        searchBar?.clearFocus()
-        searchBar?.setText("")
+        binding.homeSearch.clearFocus()
+        binding.homeSearch.setText("")
     }
 
     override fun onClickOnInfo(station: Station) {

@@ -1,5 +1,6 @@
 package emilien.tetu.taptogo.ui.home
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.view.View
@@ -9,11 +10,11 @@ import com.google.android.material.textview.MaterialTextView
 import emilien.tetu.taptogo.R
 import emilien.tetu.taptogo.presentation.presenter.Station
 
-class CustomInfoWindow(context: Context, val listItem : List<Station>) : GoogleMap.InfoWindowAdapter {
+class CustomInfoWindow(context: Context, private val listItem : List<Station>) : GoogleMap.InfoWindowAdapter {
 
-    var mContext = context
     var mWindow = (context as Activity).layoutInflater.inflate(R.layout.card_station, null)
 
+    @SuppressLint("SetTextI18n")
     private fun rendowWindowText(marker: Marker, view: View){
 
         val itemTitle: MaterialTextView = view.findViewById(R.id.title_card)

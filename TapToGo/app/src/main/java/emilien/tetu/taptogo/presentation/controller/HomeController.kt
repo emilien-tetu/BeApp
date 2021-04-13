@@ -9,9 +9,9 @@ class HomeController(private val interactor: HomeInteractor) {
     }
 
     fun getStationsWithFilter(nameStation : String?, nbBikeAvailable : Int?, onlyOpenStation : Boolean?) {
-        val nameFilter = nameStation?.let { it } ?: run { "" }
-        val numberFilter = nbBikeAvailable?.let { it } ?: run { 0 }
-        val open = onlyOpenStation?.let { it } ?: run { false }
+        val nameFilter = nameStation ?: ""
+        val numberFilter = nbBikeAvailable ?: 0
+        val open = onlyOpenStation ?: false
         interactor.getStationWithFilter(nameFilter,numberFilter,open)
     }
 

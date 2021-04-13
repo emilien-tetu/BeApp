@@ -12,13 +12,12 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 import java.util.concurrent.TimeUnit
 
-object JCDecauxAPi {
+object JCDecauxService {
 
-    private val apiKey = "2590dc856231c0ab710a781c9277e68dd73cda6a"
-    private val TIMEOUT = 30L
-    private val BASE_URL = "https://api.jcdecaux.com/vls/v1/";
+    private const val TIMEOUT = 30L
+    private const val BASE_URL = "https://api.jcdecaux.com/vls/v1/";
 
-    private fun <T> createRestService(
+    fun <T> createRestService(
             service: Class<T>
     ): T {
         val httpInterceptor = HttpLoggingInterceptor().apply {
@@ -39,18 +38,4 @@ object JCDecauxAPi {
                 .build()
                 .create(service)
     }
-
-    suspend fun getAllStation(): Response<List<JCDecauxStationResponse>> {
-        return createRestService(JCDecauxService::class.java)
-                .getAllStation(apiKey = apiKey, contractName = "nantes")
-    }
-}
-
-
-interface JCDecauxService {
-    @GET("stations")
-    suspend fun getAllStation(
-        @Query("apiKey") apiKey: String,
-        @Query("contract") contractName: String,
-    ): Response<List<JCDecauxStationResponse>>
 }

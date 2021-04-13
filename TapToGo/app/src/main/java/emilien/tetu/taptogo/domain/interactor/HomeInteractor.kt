@@ -3,6 +3,7 @@ package emilien.tetu.taptogo.domain.interactor
 import android.content.Context
 import android.location.Address
 import android.location.Geocoder
+import android.util.Log
 import com.google.android.gms.maps.model.LatLng
 import emilien.tetu.taptogo.data.api.ApiResponse
 import emilien.tetu.taptogo.data.model.JCDecauxStationResponse
@@ -48,6 +49,7 @@ class HomeInteractor(val repository: HomeRepository, val presenter: HomePresente
                     presenter.presentStations(emptyList())
                 }
             }.onFailure {
+                Log.e("DEBUG","ERROR : ${it.message} ${it.cause}")
                 presenter.presentAPIError()
             }
         }

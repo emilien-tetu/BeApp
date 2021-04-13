@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.google.android.material.textview.MaterialTextView
 import emilien.tetu.taptogo.R
+import emilien.tetu.taptogo.databinding.ActivityDetailStationBinding
+import emilien.tetu.taptogo.databinding.ActivityFilterBinding
 import emilien.tetu.taptogo.domain.model.StateStation
 import emilien.tetu.taptogo.domain.model.toStringStatus
 import emilien.tetu.taptogo.presentation.presenter.Station
@@ -29,10 +31,15 @@ class DetailStationActivity : AppCompatActivity() {
         const val BIKE_STAND = "BIKES STAND AVAILABLE : "
     }
 
+    private lateinit var binding: ActivityDetailStationBinding
+
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_detail_station)
+        binding = ActivityDetailStationBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
+        //setContentView(R.layout.activity_detail_station)
 
         val nameStation = intent.getStringExtra(NAME_STATION)
         val addressStation = intent.getStringExtra(ADDRESS_STATION)
@@ -42,19 +49,12 @@ class DetailStationActivity : AppCompatActivity() {
         val latitudeStation = intent.getDoubleExtra(LATITUDE_STATION,0.0)
         val longitudeStation = intent.getDoubleExtra(LONGITUDE_STATION,0.0)
 
-        val name = findViewById<MaterialTextView>(R.id.detailName)
-        name.text = NAME+nameStation
-        val address = findViewById<MaterialTextView>(R.id.detailAddress)
-        address.text = ADDRESS+addressStation
-        val bikes = findViewById<MaterialTextView>(R.id.detailBikeAvailable)
-        bikes.text = BIKE+bikeStation.toString()
-        val bikesStand = findViewById<MaterialTextView>(R.id.detailBikeStandAvailable)
-        bikesStand.text = BIKE_STAND+bikeStandStation.toString()
-        val status = findViewById<MaterialTextView>(R.id.detailOpen)
-        status.text = STATUS+statusStation
-        val longitude = findViewById<MaterialTextView>(R.id.detailLongitude)
-        longitude.text = LONGITUDE+longitudeStation.toString()
-        val latitude = findViewById<MaterialTextView>(R.id.detailLatitude)
-        latitude.text = LATITUDE+latitudeStation.toString()
+        binding.detailName.text = NAME+nameStation
+        binding.detailAddress.text = ADDRESS+addressStation
+        binding.detailBikeAvailable.text = BIKE+bikeStation.toString()
+        binding.detailBikeStandAvailable.text = BIKE_STAND+bikeStandStation.toString()
+        binding.detailOpen.text = STATUS+statusStation
+        binding.detailLongitude.text = LONGITUDE+longitudeStation.toString()
+        binding.detailLatitude.text = LATITUDE+latitudeStation.toString()
     }
 }

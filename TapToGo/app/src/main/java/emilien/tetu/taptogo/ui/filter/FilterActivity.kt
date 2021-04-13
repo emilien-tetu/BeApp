@@ -8,6 +8,8 @@ import android.widget.Switch
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.switchmaterial.SwitchMaterial
 import emilien.tetu.taptogo.R
+import emilien.tetu.taptogo.databinding.ActivityFilterBinding
+import emilien.tetu.taptogo.databinding.ActivityNavigationBinding
 import emilien.tetu.taptogo.ui.home.HomeActivity
 
 class FilterActivity : AppCompatActivity() {
@@ -18,25 +20,25 @@ class FilterActivity : AppCompatActivity() {
         const val ONLY_OPEN = "ONLY_OPEN"
     }
 
+    private lateinit var binding: ActivityFilterBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_filter)
+        binding = ActivityFilterBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
+        //setContentView(R.layout.activity_filter)
 
         var isCheck = false
 
-        val nameStationEditText = findViewById<EditText>(R.id.filterNameStation)
-        val numberBikeAvailableEditText = findViewById<EditText>(R.id.filterBikeAvailable)
-        val onlyOpenStation = findViewById<SwitchMaterial>(R.id.filterSwitch)
-        val searchButton = findViewById<MaterialButton>(R.id.filterButton)
+        binding.filterSwitch.setOnCheckedChangeListener { _, isChecked -> isCheck = isChecked }
 
-        onlyOpenStation.setOnCheckedChangeListener { buttonView, isChecked -> isCheck = isChecked }
+        binding.filterButton.setOnClickListener {
 
-        searchButton.setOnClickListener {
-
-            val numberBikeString : String = numberBikeAvailableEditText.text.toString()
+            val numberBikeString : String = binding.filterBikeAvailable.text.toString()
             val numberBike : Int = if (numberBikeString != ""){numberBikeString.toInt()} else {0}
 
-            val nameStation : String = nameStationEditText.text.toString()
+            val nameStation : String = binding.filterNameStation.text.toString()
 
             val intent = Intent(this,HomeActivity::class.java)
             intent.putExtra(NAME_STATION, nameStation)
