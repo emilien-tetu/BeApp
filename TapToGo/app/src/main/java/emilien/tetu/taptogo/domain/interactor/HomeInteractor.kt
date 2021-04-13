@@ -7,6 +7,7 @@ import com.google.android.gms.maps.model.LatLng
 import emilien.tetu.taptogo.data.api.ApiResponse
 import emilien.tetu.taptogo.data.model.JCDecauxStationResponse
 import emilien.tetu.taptogo.data.repository.HomeRepository
+import emilien.tetu.taptogo.domain.interactor.HomeInteractor.Companion.earthRadiusKm
 import emilien.tetu.taptogo.domain.model.StateStation
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -14,16 +15,22 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import java.io.IOException
 import kotlin.coroutines.CoroutineContext
+import kotlin.math.*
 
 
-interface HomePresenter{
+interface HomePresenter {
     fun presentStations(stationData: List<StationData>)
     fun presentAPIError()
     fun startLoading()
+    fun presentNavigation(stationData: List<StationData>)
     fun presentNavigationError(message: String)
 }
 
 class HomeInteractor(val repository: HomeRepository, val presenter: HomePresenter) {
+
+    companion object {
+        const val earthRadiusKm: Double = 6372.8
+    }
 
     private val job: Job = Job()
     private val coroutineContext: CoroutineContext = job + Dispatchers.IO
@@ -35,10 +42,9 @@ class HomeInteractor(val repository: HomeRepository, val presenter: HomePresente
             runCatching {
                 repository.getAllStation()
             }.onSuccess {
-                if (it is ApiResponse.Success){
+                if (it is ApiResponse.Success) {
                     presenter.presentStations(it.data.transformToStation())
-                }
-                else{
+                } else {
                     presenter.presentStations(emptyList())
                 }
             }.onFailure {
@@ -53,21 +59,20 @@ class HomeInteractor(val repository: HomeRepository, val presenter: HomePresente
             runCatching {
                 repository.getAllStation()
             }.onSuccess {
-                if (it is ApiResponse.Success){
+                if (it is ApiResponse.Success) {
                     val listOfStation = it.data.transformToStation()
-                    val listOfStationWithFilter : MutableList<StationData> = mutableListOf()
+                    val listOfStationWithFilter: MutableList<StationData> = mutableListOf()
                     listOfStation.forEach { stationData ->
                         if (
                             stationData.name.toUpperCase().contains(nameStation.toUpperCase())
                             && stationData.availableBikes >= numberBike
                             && checkIsOpen(stationData.status, onlyOpen)
-                        ){
+                        ) {
                             listOfStationWithFilter.add(stationData)
                         }
                     }
                     presenter.presentStations(listOfStationWithFilter)
-                }
-                else{
+                } else {
                     presenter.presentStations(emptyList())
                 }
             }.onFailure {
@@ -76,24 +81,35 @@ class HomeInteractor(val repository: HomeRepository, val presenter: HomePresente
         }
     }
 
-    fun getNavigation(context : Context, departure: String?, arrival: String?){
-        if (departure == null || arrival == null){
+    fun getNavigation(context: Context, departure: String?, arrival: String?) {
+        if (departure == null || arrival == null || departure == "" || arrival == "") {
             presenter.presentNavigationError("Departure or arrival address is empty")
         } else {
             presenter.startLoading()
+            var departurePoint: LatLng? = null
+            var arrivalPoint: LatLng? = null
             coroutineScope.launch {
                 runCatching {
-                    val departurePoint: LatLng? = getLocationFromAddress(context,departure)
-                    val arrivalPoint: LatLng? = getLocationFromAddress(context,arrival)
+                    departurePoint = getLocationFromAddress(context, departure)
+                    arrivalPoint = getLocationFromAddress(context, arrival)
                     repository.getAllStation()
                 }.onSuccess {
-                    if (it is ApiResponse.Success){
+                    if (it is ApiResponse.Success) {
                         val listOfStation = it.data.transformToStation()
-                        val stationDepature : StationData? = null
-                        val stationArrival : StationData? = null
-                        //presenter.presentStations(listOfStationWithFilter)
-                    }
-                    else{
+                        val stationDeparture: StationData? = getNearestStation(
+                            departurePoint,
+                            listOfStation.filter { station -> station.availableBikes != 0 })
+                        val stationArrival: StationData? = getNearestStation(
+                            arrivalPoint,
+                            listOfStation.filter { station -> station.availableBikeStands != 0 })
+                        if (stationDeparture == null || stationArrival == null) {
+                            presenter.presentNavigationError("no stations found")
+                        } else if (stationDeparture == stationArrival) {
+                            presenter.presentNavigationError("The departure and arrival station are the same")
+                        } else {
+                            presenter.presentNavigation(listOf(stationDeparture, stationArrival))
+                        }
+                    } else {
                         presenter.presentStations(emptyList())
                     }
                 }.onFailure {
@@ -121,17 +137,47 @@ fun getLocationFromAddress(context: Context?, strAddress: String?): LatLng? {
     return p1
 }
 
-fun checkIsOpen(status: StateStation, onlyOpen: Boolean) : Boolean{
-    var bool = true
-    when(status){
-        StateStation.CLOSE -> {
-            bool = !onlyOpen
+fun getNearestStation(userLatLng: LatLng?, listOfStation: List<StationData>): StationData? {
+    var nearestStation: StationData? = null
+    var distanceMin = 100.0
+    if (userLatLng != null) {
+        listOfStation.forEach {
+            val latit = it.latitude
+            val longit = it.longitude
+            val distance = distanceHaversine(userLatLng, LatLng(latit, longit))
+            if (distance < distanceMin) {
+                nearestStation = it
+                distanceMin = distance
+            }
         }
     }
-    return bool
+    return nearestStation
 }
 
-fun List<JCDecauxStationResponse>.transformToStation() : List<StationData> {
+fun distanceHaversine(userLatLng: LatLng, point: LatLng): Double {
+    val dLat = Math.toRadians(point.latitude - userLatLng.latitude)
+    val dLon = Math.toRadians(point.longitude - userLatLng.longitude)
+    val originLat = Math.toRadians(userLatLng.latitude)
+    val destinationLat = Math.toRadians(point.latitude)
+
+    val a =
+        sin(dLat / 2).pow(2.toDouble()) + sin(dLon / 2).pow(2.toDouble()) * cos(originLat) * cos(
+            destinationLat
+        );
+    val c = 2 * asin(sqrt(a))
+    return earthRadiusKm * c
+}
+
+fun checkIsOpen(status: StateStation, onlyOpen: Boolean): Boolean {
+    return when (status) {
+        StateStation.CLOSE -> {
+            !onlyOpen
+        }
+        else -> true
+    }
+}
+
+fun List<JCDecauxStationResponse>.transformToStation(): List<StationData> {
     return this.map {
         StationData(
             number = it.number,
@@ -146,13 +192,16 @@ fun List<JCDecauxStationResponse>.transformToStation() : List<StationData> {
     }
 }
 
-private fun setStatus(isOpen: Boolean, availableBikes: Int, availableBikeStands: Int) : StateStation{
-    var status : StateStation = StateStation.OPEN
-    if (isOpen){
-        if (availableBikes == 0){
+private fun setStatus(
+    isOpen: Boolean,
+    availableBikes: Int,
+    availableBikeStands: Int
+): StateStation {
+    var status: StateStation = StateStation.OPEN
+    if (isOpen) {
+        if (availableBikes == 0) {
             status = StateStation.EMPTY
-        }
-        else if (availableBikeStands == 0){
+        } else if (availableBikeStands == 0) {
             status = StateStation.FULL
         }
     } else {

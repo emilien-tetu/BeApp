@@ -52,7 +52,7 @@ class HomeActivity : AppCompatActivity(), OnMapReadyCallback, StationListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
 
-        viewModel.state.observe(this, Observer { updateUI(it) })
+        viewModel.state.observe(this, { updateUI(it) })
 
         controller.getAllStations()
 
@@ -67,7 +67,7 @@ class HomeActivity : AppCompatActivity(), OnMapReadyCallback, StationListener {
         recyclerView?.adapter = viewAdapter
 
         searchBar = findViewById(R.id.homeSearch)
-        searchBar?.doOnTextChanged { text, start, before, count ->
+        searchBar?.doOnTextChanged { text, _, _, _ ->
             refreshData(getSearchResult(text, listOfStation).sortedBy { it.name })
         }
 
@@ -127,8 +127,8 @@ class HomeActivity : AppCompatActivity(), OnMapReadyCallback, StationListener {
         Log.d("DEBUG", "state = ${state::class.java.simpleName}")
         when (state) {
             is LoadDataError -> {
-                val snackbar = Snackbar.make(window.decorView.rootView,"Something append, retry later..",Snackbar.LENGTH_LONG)
-                snackbar.show()
+                progressBar?.visibility = View.GONE
+                Snackbar.make(findViewById(android.R.id.content),"Something append, retry later..",Snackbar.LENGTH_LONG).show()
             }
             is LoadStation -> {
                 progressBar?.visibility = View.GONE
@@ -136,9 +136,18 @@ class HomeActivity : AppCompatActivity(), OnMapReadyCallback, StationListener {
                 listOfStationSave = state.stations.toMutableList()
                 addStations(state.stations)
             }
+            is LoadNavigationStation -> {
+                progressBar?.visibility = View.GONE
+                listOfStation = state.stations.toMutableList()
+                addNavigationStations(state.stations.first(),state.stations.last())
+            }
             is Loading -> {
                 mGoogleMap?.clear()
                 progressBar?.visibility = View.VISIBLE
+            }
+            is LoadNavigationError -> {
+                progressBar?.visibility = View.GONE
+                Snackbar.make(findViewById(android.R.id.content),state.message,Snackbar.LENGTH_LONG).show()
             }
         }
     }
@@ -149,6 +158,14 @@ class HomeActivity : AppCompatActivity(), OnMapReadyCallback, StationListener {
         }
         mGoogleMap?.setInfoWindowAdapter(CustomInfoWindow(this, listOfStation))
         refreshData(listOfStation.sortedBy { it.name })
+    }
+
+    private fun addNavigationStations(departureStation: Station, arrivalStation: Station){
+        mGoogleMap?.addMarker(LatLng(departureStation.latitude, departureStation.longitude), departureStation.name, StateStation.OPEN)
+        mGoogleMap?.addMarker(LatLng(arrivalStation.latitude, arrivalStation.longitude), arrivalStation.name,  StateStation.CLOSE)
+        val listStation = listOf(departureStation,arrivalStation)
+        mGoogleMap?.setInfoWindowAdapter(CustomInfoWindow(this, listStation))
+        refreshData(listStation.sortedBy { it.name })
     }
 
     override fun onMapReady(googleMap: GoogleMap?) {

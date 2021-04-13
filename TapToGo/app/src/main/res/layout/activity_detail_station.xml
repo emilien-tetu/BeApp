@@ -11,7 +11,7 @@
         android:id="@+id/detailTittle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Station"
+        android:text="@string/station"
         android:textStyle="bold"
         android:textAlignment="center"
         android:textSize="30sp"
@@ -21,7 +21,7 @@
         android:id="@+id/detailName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="name : station name"
+        android:text="@string/name_station"
         android:layout_marginTop="30dp"
         android:textSize="20sp"
         app:layout_constraintTop_toBottomOf="@id/detailTittle"/>
@@ -30,7 +30,7 @@
         android:id="@+id/detailAddress"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="address : address station"
+        android:text="@string/address_station"
         android:layout_marginTop="30dp"
         android:textSize="20sp"
         app:layout_constraintTop_toBottomOf="@id/detailName"/>
@@ -39,7 +39,7 @@
         android:id="@+id/detailBikeAvailable"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Bikes available : 30"
+        android:text="@string/bikes_available"
         android:layout_marginTop="30dp"
         android:textSize="20sp"
         app:layout_constraintTop_toBottomOf="@id/detailAddress"/>
@@ -48,7 +48,7 @@
         android:id="@+id/detailBikeStandAvailable"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Bikes stand available : 30"
+        android:text="@string/bikes_stand_available"
         android:layout_marginTop="30dp"
         android:textSize="20sp"
         app:layout_constraintTop_toBottomOf="@id/detailBikeAvailable"/>
@@ -57,7 +57,7 @@
         android:id="@+id/detailOpen"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Status : Open"
+        android:text="@string/status"
         android:layout_marginTop="30dp"
         android:textSize="20sp"
         app:layout_constraintTop_toBottomOf="@id/detailBikeStandAvailable"/>
@@ -66,7 +66,7 @@
         android:id="@+id/detailLatitude"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Latitude : -47.8909"
+        android:text="@string/latitude"
         android:layout_marginTop="30dp"
         android:textSize="20sp"
         app:layout_constraintTop_toBottomOf="@id/detailOpen"/>
@@ -75,7 +75,7 @@
         android:id="@+id/detailLongitude"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Latitude : -47.8909"
+        android:text="@string/latitude"
         android:layout_marginTop="30dp"
         android:textSize="20sp"
         app:layout_constraintTop_toBottomOf="@id/detailLatitude"/>

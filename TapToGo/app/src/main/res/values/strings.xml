@@ -1,3 +1,23 @@
 <resources>
     <string name="app_name">TapToGo</string>
+    <string name="station">Station</string>
+    <string name="name_station">name : station name</string>
+    <string name="address_station">address : address station</string>
+    <string name="bikes_available">Bikes available : 30</string>
+    <string name="bikes_stand_available">Bikes stand available : 30</string>
+    <string name="status">Status : Open</string>
+    <string name="latitude">Latitude : -47.8909</string>
+    <string name="filters">Filters</string>
+    <string name="name_station_filter">Name station :</string>
+    <string name="bike_available_filter">Bike available :</string>
+    <string name="show_only_open_station_filter">Show only open station :</string>
+    <string name="search">Search</string>
+    <string name="taptogo">TapToGo</string>
+    <string name="navigation">Navigation</string>
+    <string name="departure_address">Departure address</string>
+    <string name="arrival_address">Arrival address</string>
+    <string name="title_card">title_card</string>
+    <string name="address_card">address_card</string>
+    <string name="available_bike_card">available_bike_card</string>
+    <string name="available_park_bike_card">available_park_bike_card</string>
 </resources>

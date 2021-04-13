@@ -18,9 +18,21 @@ class HomeViewModel : ViewModel() {
     fun displayLoading(){
         state.postValue(Loading)
     }
+
+    fun displayNavigationError(message : String){
+        state.postValue(LoadNavigationError(message))
+    }
+
+    fun displayNavigationStation(list: List<Station>){
+        state.postValue(LoadNavigationStation(list))
+    }
+
+
 }
 
 sealed class HomeState
 data class LoadStation(val stations: List<Station>) : HomeState()
+data class LoadNavigationStation(val stations: List<Station>) : HomeState()
+data class LoadNavigationError(val message: String) : HomeState()
 object LoadDataError: HomeState()
 object Loading: HomeState()

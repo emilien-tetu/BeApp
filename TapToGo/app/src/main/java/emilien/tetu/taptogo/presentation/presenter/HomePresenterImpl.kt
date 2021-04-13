@@ -17,6 +17,14 @@ class HomePresenterImpl(val viewModel: HomeViewModel) : HomePresenter {
     override fun startLoading() {
         viewModel.displayLoading()
     }
+
+    override fun presentNavigation(stationData: List<StationData>) {
+        viewModel.displayNavigationStation(stationData.transformToStation())
+    }
+
+    override fun presentNavigationError(message: String) {
+        viewModel.displayNavigationError(message)
+    }
 }
 
 fun List<StationData>.transformToStation() : List<Station> {
